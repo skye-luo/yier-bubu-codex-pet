@@ -90,8 +90,8 @@ def build_cover() -> None:
     draw.ellipse((760, -90, 1140, 290), fill=(255, 214, 196, 110))
     draw.ellipse((-140, 1010, 360, 1510), fill=(238, 202, 212, 105))
     badge(draw, (72, 72), "Codex Desktop 宠物", (255, 255, 255, 215), (93, 68, 64, 255))
-    draw.text((72, 190), "一二 × 布布", font=F_TITLE, fill=(72, 53, 51, 255))
-    draw.text((72, 302), "搬进 Codex 了", font=F_TITLE, fill=(72, 53, 51, 255))
+    draw.text((72, 190), "我把一二和布布", font=F_TITLE, fill=(72, 53, 51, 255))
+    draw.text((72, 302), "搬进 Codex 啦！", font=F_TITLE, fill=(72, 53, 51, 255))
     draw.text((76, 432), "会工作，也会按时睡觉", font=F_SUBTITLE, fill=(135, 94, 88, 255))
 
     draw.rounded_rectangle((80, 590, 1000, 1245), radius=76, fill=(255, 255, 255, 205))
@@ -134,50 +134,23 @@ def build_install() -> None:
     canvas = gradient((246, 242, 236), (234, 225, 213))
     draw = ImageDraw.Draw(canvas)
     badge(draw, (72, 72), "macOS 安装", (255, 255, 255, 220), (81, 66, 57, 255))
-    draw.text((72, 184), "4 行命令", font=F_TITLE, fill=(65, 52, 46, 255))
-    draw.text((72, 296), "养进 Codex", font=F_TITLE, fill=(65, 52, 46, 255))
+    draw.text((72, 184), "复制这一条", font=F_TITLE, fill=(65, 52, 46, 255))
+    draw.text((72, 296), "就能养进 Codex", font=F_TITLE, fill=(65, 52, 46, 255))
     draw.rounded_rectangle((65, 475, 1015, 1035), radius=45, fill=(44, 40, 40, 245))
-    commands = [
-        ("01", "git clone https://github.com/", 548),
-        ("", "skye-luo/yier-bubu-codex-pet.git", 596),
-        ("02", "cd yier-bubu-codex-pet", 700),
-        ("03", "bash install.sh", 805),
-        ("04", "bash install-sleep-mode.sh", 910),
+    badge(draw, (100, 535), "一条命令", (229, 177, 159, 255), (51, 42, 39, 255))
+    command_lines = [
+        "curl -fsSL https://raw.githubusercontent.com/",
+        "skye-luo/yier-bubu-codex-pet/v1.0.1/",
+        "quick-install.sh | bash",
     ]
-    for number, command, y in commands:
-        if number:
-            draw.rounded_rectangle((100, y - 7, 160, y + 45), radius=16, fill=(229, 177, 159, 255))
-            text_center(draw, (130, y + 2), number, F_CODE, (51, 42, 39, 255))
-        draw.text((190 if number else 190, y), command, font=F_CODE, fill=(245, 241, 237, 255))
+    for index, command in enumerate(command_lines):
+        draw.text((100, 665 + index * 72), command, font=F_CODE, fill=(245, 241, 237, 255))
+    draw.text((100, 915), "同一条命令 · 终端整行复制", font=F_SMALL, fill=(205, 190, 185, 255))
     draw.rounded_rectangle((65, 1085, 1015, 1290), radius=42, fill=(255, 255, 255, 205))
-    draw.text((110, 1128), "安装后重启 Codex", font=F_HEADING, fill=(73, 59, 53, 255))
-    draw.text((110, 1206), "设置 → 外观 → Pets → 选择角色", font=F_BODY, fill=(116, 89, 79, 255))
+    draw.text((110, 1128), "自动安装 + 自动睡眠", font=F_HEADING, fill=(73, 59, 53, 255))
+    draw.text((110, 1206), "重启 Codex → Pets → 选择角色", font=F_BODY, fill=(116, 89, 79, 255))
     footer(draw)
     canvas.convert("RGB").save(OUTPUT / "03-install.png", quality=95)
-
-
-def build_features() -> None:
-    canvas = gradient((251, 246, 247), (240, 230, 235))
-    draw = ImageDraw.Draw(canvas)
-    badge(draw, (72, 72), "独立双角色项目", (255, 255, 255, 220), (90, 64, 73, 255))
-    draw.text((72, 184), "设置里始终只有", font=F_TITLE, fill=(66, 47, 53, 255))
-    draw.text((72, 296), "一二和布布", font=F_TITLE, fill=(66, 47, 53, 255))
-    items = [
-        ("01", "不会出现“睡觉版”角色卡"),
-        ("02", "22 点自动睡，8 点自动醒"),
-        ("03", "安装前备份，可恢复卸载"),
-        ("04", "项目源码与安装说明已公开"),
-    ]
-    for index, (number, value) in enumerate(items):
-        y = 520 + index * 155
-        draw.rounded_rectangle((65, y, 1015, y + 118), radius=38, fill=(255, 255, 255, 210))
-        draw.rounded_rectangle((95, y + 29, 157, y + 91), radius=20, fill=(230, 195, 202, 255))
-        text_center(draw, (126, y + 42), number, F_SMALL, (75, 55, 61, 255))
-        draw.text((190, y + 35), value, font=F_BODY, fill=(78, 58, 64, 255))
-    draw.text((75, 1195), "GitHub", font=F_HEADING, fill=(72, 53, 59, 255))
-    draw.text((75, 1270), "skye-luo / yier-bubu-codex-pet", font=F_BODY, fill=(117, 80, 92, 255))
-    footer(draw)
-    canvas.convert("RGB").save(OUTPUT / "04-features.png", quality=95)
 
 
 def main() -> int:
@@ -185,8 +158,7 @@ def main() -> int:
     build_cover()
     build_sleep()
     build_install()
-    build_features()
-    print(f"已生成 4 张小红书图片：{OUTPUT}")
+    print(f"已生成 3 张小红书图片：{OUTPUT}")
     return 0
 
 

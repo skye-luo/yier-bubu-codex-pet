@@ -19,16 +19,22 @@
 - [一二夜间动作表：仅待机行睡觉](docs/yier-sleep-contact-sheet.png)
 - [布布夜间动作表：仅待机行睡觉](docs/bubu-sleep-contact-sheet.png)
 
-## 安装（macOS）
+## 一行安装（macOS）
 
 ```bash
-git clone https://github.com/skye-luo/yier-bubu-codex-pet.git
+curl -fsSL https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v1.0.1/quick-install.sh | bash
+```
+
+这条命令会安装两个宠物并启用 22:00–08:00 自动睡眠。安装完成后重启 Codex，进入 `设置 → 外观 → Pets`，选择“一二”或“布布”。
+
+如果你希望先查看脚本再执行，也可以使用透明的分步安装：
+
+```bash
+git clone --branch v1.0.1 https://github.com/skye-luo/yier-bubu-codex-pet.git
 cd yier-bubu-codex-pet
 bash install.sh
 bash install-sleep-mode.sh
 ```
-
-安装完成后重启 Codex，进入 `设置 → 外观 → Pets`，选择“一二”或“布布”。
 
 `install-sleep-mode.sh` 会启用自动睡眠：
 
@@ -69,6 +75,7 @@ bash uninstall.sh
 ├── social/xiaohongshu/
 ├── install.sh
 ├── install-sleep-mode.sh
+├── quick-install.sh
 ├── uninstall.sh
 ├── uninstall-sleep-mode.sh
 └── verify.sh

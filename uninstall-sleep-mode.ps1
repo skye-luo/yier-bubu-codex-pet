@@ -17,7 +17,10 @@ if (Test-Path -LiteralPath $SchedulerPath -PathType Leaf) {
     & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $SchedulerPath -Mode Awake -CodexHome $CodexHome
 }
 
+$previousErrorAction = $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
 & schtasks.exe /Delete /TN $TaskName /F 2>$null | Out-Null
+$ErrorActionPreference = $previousErrorAction
 
 if (Test-Path -LiteralPath $RuntimeRoot) {
     New-Item -ItemType Directory -Path $BackupRoot -Force | Out-Null

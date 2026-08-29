@@ -42,7 +42,10 @@ foreach ($petId in @("yier", "bubu")) {
     Copy-Item -LiteralPath (Join-Path $RepoRoot "pets\$petId\spritesheet-night.webp") -Destination (Join-Path $RuntimeAssets "$petId-sleep.webp")
 }
 
+$previousErrorAction = $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
 & schtasks.exe /Delete /TN $TaskName /F 2>$null | Out-Null
+$ErrorActionPreference = $previousErrorAction
 $taskCommand = "powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$SchedulerPath`" -Mode Auto -CodexHome `"$CodexHome`""
 & schtasks.exe /Create /TN $TaskName /SC MINUTE /MO 5 /TR $taskCommand /F | Out-Null
 if ($LASTEXITCODE -ne 0) {

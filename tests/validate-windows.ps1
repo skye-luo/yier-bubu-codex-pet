@@ -60,7 +60,10 @@ try {
     Write-Host "Windows 安装、定时切换与卸载流程通过。"
 }
 finally {
+    $previousErrorAction = $ErrorActionPreference
+    $ErrorActionPreference = "SilentlyContinue"
     & schtasks.exe /Delete /TN $TaskName /F 2>$null | Out-Null
+    $ErrorActionPreference = $previousErrorAction
     if (Test-Path -LiteralPath $TestRoot) {
         Remove-Item -LiteralPath $TestRoot -Recurse -Force
     }

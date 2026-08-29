@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [ValidateSet("Auto", "Sleep", "Awake")]
     [string]$Mode = "Auto",

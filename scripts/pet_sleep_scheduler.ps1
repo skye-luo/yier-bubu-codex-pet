@@ -39,10 +39,11 @@ function Copy-FileAtomicallyIfChanged {
     $targetDir = Split-Path -Parent $Target
     New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
     $tempPath = Join-Path $targetDir (".{0}.{1}.tmp" -f (Split-Path -Leaf $Target), $PID)
+    $backupPath = Join-Path $targetDir (".{0}.{1}.bak" -f (Split-Path -Leaf $Target), $PID)
     Copy-Item -LiteralPath $Source -Destination $tempPath -Force
     try {
         if (Test-Path -LiteralPath $Target -PathType Leaf) {
-            [IO.File]::Replace($tempPath, $Target, $null, $true)
+            [IO.File]::Replace($tempPath, $Target, $backupPath, $true)
         }
         else {
             Move-Item -LiteralPath $tempPath -Destination $Target
@@ -51,6 +52,9 @@ function Copy-FileAtomicallyIfChanged {
     finally {
         if (Test-Path -LiteralPath $tempPath) {
             Remove-Item -LiteralPath $tempPath -Force
+        }
+        if (Test-Path -LiteralPath $backupPath) {
+            Remove-Item -LiteralPath $backupPath -Force
         }
     }
     return $true

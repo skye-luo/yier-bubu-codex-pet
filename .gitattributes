@@ -1,3 +1,4 @@
 *.webp binary
 *.gif binary
 *.png binary
+*.ps1 text eol=lf

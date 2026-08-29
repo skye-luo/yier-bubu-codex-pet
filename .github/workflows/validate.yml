@@ -1,0 +1,33 @@
+name: Validate pet package
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  assets-and-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install image validation dependency
+        run: python -m pip install Pillow
+      - name: Validate pet atlases and checksums
+        run: bash verify.sh
+      - name: Test macOS install in an isolated Codex home
+        run: |
+          test_root="$(mktemp -d)"
+          trap 'rm -rf "$test_root"' EXIT
+          CODEX_HOME="$test_root/.codex" bash install.sh
+          test -f "$test_root/.codex/pets/yier/pet.json"
+          test -f "$test_root/.codex/pets/bubu/pet.json"
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Windows install, scheduler, and uninstall
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\validate-windows.ps1

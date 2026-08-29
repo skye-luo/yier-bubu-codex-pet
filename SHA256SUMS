@@ -12,7 +12,7 @@ d8f25844a5f62006c2b708d4f8a9bd77f113c1948f39946f4ec7c5787b787ab8  ./docs/bubu-co
 f1f9c48da281e4309afa1bad60052edf4ea39f940f694bb1be573e42115e76ae  ./docs/previews/yier-sleep.gif
 d7a40b32a267d9b24abc4c89e0ad9231aed4be13412d6aa2f020bbfe6d930d37  ./docs/yier-contact-sheet.png
 88fc95d05b4bcc74b8dc9b64bbd542b1117374bf171e2a71570eff0747df0b0a  ./docs/yier-sleep-contact-sheet.png
-598238e4ac3b75a15ff16faf58a1cd520e8f2298ae92ce56967be877dad03786  ./install-sleep-mode.ps1
+b98ae7d50a5c653e108eb06b3fd16351e9ffc424e970b02b527ba7409e3c5430  ./install-sleep-mode.ps1
 b178129b2a421efec40af34f9746cf9d35f532923c394103ab0069445cb2430e  ./install-sleep-mode.sh
 997853707cd43461fac59e3256f4d314cfa7e9a75111060dd61c7f57545fab91  ./install.ps1
 a3ee6abd954a98b957c94f30a6d960c933f41c9f752ec2ce9c7f6b356ba84d18  ./install.sh
@@ -27,7 +27,7 @@ e5d31bc9ab178299f25579805b4e22d9893dbe9c97b11dd852b1d25645818d7e  ./pets/yier/sp
 17ce74315264354c7f7cf2bac752a29a2d1cd97586d798a82a626dbea69c02b8  ./quick-install.sh
 6a26f06ce5ea3df09fd84cc6b447fd863c3c8ce7f52cb3b56b10153e72b3bcce  ./scripts/build_night_atlas.py
 e59bb2e44389b6329545d4e470676a6f86a691bd964ee57a4d8e080134225993  ./scripts/build_xiaohongshu_cards.py
-8afc0c830962bf54eca1bc2a6e42a7e656600475b233d6e1534c4b73bffebcc7  ./scripts/pet_sleep_scheduler.ps1
+1d731dee1066abb44eda6eb2fda842c4858318d99f5d4d5c40dedd8a01d26203  ./scripts/pet_sleep_scheduler.ps1
 e954508e8e365e2dcadf01d3bae3603455ab90d34ba563b9c943083371c05054  ./scripts/pet_sleep_scheduler.py
 57db2ab6f6069de90155dc2195fdaebb99ee860d05b1cf153ee7353ce4df28b8  ./scripts/select_codex_pet.mjs
 e56f7b24e0a3c58bf8676e7c5d24cb954240016da49e3e12c1ba93fe14057c84  ./scripts/validate_pet_assets.py

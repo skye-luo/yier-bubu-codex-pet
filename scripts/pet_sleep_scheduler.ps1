@@ -2,16 +2,21 @@
 param(
     [ValidateSet("Auto", "Sleep", "Awake")]
     [string]$Mode = "Auto",
-    [string]$CodexHome = $(
-        if ($env:CODEX_HOME) { $env:CODEX_HOME }
-        else { Join-Path $HOME ".codex" }
-    ),
+    [string]$CodexHome,
     [string]$Assets,
     [string]$StatePath
 )
 
 $ErrorActionPreference = "Stop"
 $PetIds = @("yier", "bubu")
+$ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+if (-not $CodexHome) {
+    if ((Split-Path -Leaf $ScriptRoot) -eq "yier-bubu-pet-sleep-mode") {
+        $CodexHome = Split-Path -Parent $ScriptRoot
+    }
+    elseif ($env:CODEX_HOME) { $CodexHome = $env:CODEX_HOME }
+    else { $CodexHome = Join-Path $HOME ".codex" }
+}
 $RuntimeRoot = Join-Path $CodexHome "yier-bubu-pet-sleep-mode"
 if (-not $Assets) { $Assets = Join-Path $RuntimeRoot "assets" }
 if (-not $StatePath) { $StatePath = Join-Path $RuntimeRoot "state.json" }

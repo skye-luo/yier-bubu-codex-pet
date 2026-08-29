@@ -46,7 +46,7 @@ $previousErrorAction = $ErrorActionPreference
 $ErrorActionPreference = "SilentlyContinue"
 & schtasks.exe /Delete /TN $TaskName /F 2>$null | Out-Null
 $ErrorActionPreference = $previousErrorAction
-$taskCommand = "powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$SchedulerPath`" -Mode Auto -CodexHome `"$CodexHome`""
+$taskCommand = "powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$SchedulerPath`" -Mode Auto"
 & schtasks.exe /Create /TN $TaskName /SC MINUTE /MO 5 /TR $taskCommand /F | Out-Null
 if ($LASTEXITCODE -ne 0) {
     throw "创建 Windows 定时任务失败（退出码 $LASTEXITCODE）。"

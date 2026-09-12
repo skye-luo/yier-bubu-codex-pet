@@ -13,15 +13,15 @@
 
 安装方法（旧版也可以这样更新）：
 
-1️⃣直接告诉 Codex：「帮我安装或更新 https://github.com/skye-luo/yier-bubu-codex-pet 里的宠物」。
+1️⃣直接告诉 Codex：「帮我安装或更新 https://github.com/skye-luo/yier-bubu-codex-pets 里的宠物」。
 
 2️⃣自己一行安装：
 
 Windows 打开 PowerShell：
-irm https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v2.0.0/quick-install.ps1 | iex
+irm https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pets/v2.0.0/quick-install.ps1 | iex
 
 macOS 打开“终端”：
-curl -fsSL https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v2.0.0/quick-install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pets/v2.0.0/quick-install.sh | bash
 
 装好后重启 Codex，在「设置 → Pets」选择一二或布布。
 

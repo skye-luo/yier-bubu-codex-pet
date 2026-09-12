@@ -37,17 +37,26 @@ if (Test-Path -LiteralPath $RuntimeRoot) {
 
 New-Item -ItemType Directory -Path $RuntimeAssets -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $RepoRoot "scripts\pet_sleep_scheduler.ps1") -Destination $SchedulerPath
+Copy-Item -LiteralPath (Join-Path $RepoRoot "scripts\activity_state.ps1") -Destination (Join-Path $RuntimeRoot 'activity_state.ps1')
 foreach ($petId in @("yier", "bubu")) {
     Copy-Item -LiteralPath (Join-Path $RepoRoot "pets\$petId\spritesheet.webp") -Destination (Join-Path $RuntimeAssets "$petId-awake.webp")
     Copy-Item -LiteralPath (Join-Path $RepoRoot "pets\$petId\spritesheet-night.webp") -Destination (Join-Path $RuntimeAssets "$petId-sleep.webp")
+    foreach ($activityName in @('research', 'writing')) {
+        foreach ($modeName in @('awake', 'sleep')) {
+            $variant = Join-Path $RepoRoot "pets\$petId\variants\$activityName-$modeName.webp"
+            if (Test-Path -LiteralPath $variant) {
+                Copy-Item -LiteralPath $variant -Destination (Join-Path $RuntimeAssets "$petId-$activityName-$modeName.webp")
+            }
+        }
+    }
 }
 
 $previousErrorAction = $ErrorActionPreference
 $ErrorActionPreference = "SilentlyContinue"
 & schtasks.exe /Delete /TN $TaskName /F 2>$null | Out-Null
 $ErrorActionPreference = $previousErrorAction
-$taskCommand = "powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$SchedulerPath`" -Mode Auto"
-& schtasks.exe /Create /TN $TaskName /SC MINUTE /MO 5 /TR $taskCommand /F | Out-Null
+$taskCommand = "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$SchedulerPath`" -WatchSeconds 55"
+& schtasks.exe /Create /TN $TaskName /SC MINUTE /MO 1 /TR $taskCommand /F | Out-Null
 if ($LASTEXITCODE -ne 0) {
     throw "创建 Windows 定时任务失败（退出码 $LASTEXITCODE）。"
 }
@@ -60,7 +69,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ""
 Write-Host "睡眠模式已启用：设置中仍只有“一二”和“布布”。"
 Write-Host "22:00–08:00 无任务时睡觉；工作、等待和检查动作保持正常。"
-Write-Host "Windows 定时任务每 5 分钟校正一次，并已按当前本地时间执行。"
+Write-Host "Windows 每分钟启动一次本地状态检查，在运行期间每 5 秒检查任务类型。"
 if (Test-Path -LiteralPath $BackupRoot) {
     Write-Host "旧定时组件备份在：$BackupRoot"
 }

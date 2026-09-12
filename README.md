@@ -1,10 +1,25 @@
 # 一二 × 布布：Codex 宠物
 
-一个只包含“一二”和“布布”的独立 Codex Desktop 宠物项目。两个角色都保留完整工作动画，并会在每天 22:00–次日 08:00 自动进入夜间待机：没有任务时睡觉，工作、等待确认或检查时保持原动作。
+一个只包含“一二”和“布布”的独立 Codex Desktop 宠物项目。v2.0.0 更新了两只宠物的形象和循环动作：白天精神满满，查资料抱书、写代码抱电脑、写作抱本子；晚上 22:00–次日 08:00 空闲时自动睡觉。
 
 > 非官方、非商业的粉丝体验版本。角色素材不在 MIT 许可范围内，详见 [ASSET-NOTICE.md](ASSET-NOTICE.md)。
 
 ## 预览
+
+![新版形象与状态设计](docs/state-concept.png)
+
+| 状态 | 常驻造型 |
+| --- | --- |
+| 白天待机 | 挺起小身体，呼吸、眨眼 |
+| 查找资料 | 抱书和放大镜 |
+| 写代码 / 通用工作 | 抱电脑，持续敲键盘 |
+| 写作规划 | 抱本子，拿铅笔 |
+| 检查结果 | 抱检查板，认真核对 |
+| 等你回应 | 坐好，期待地望向你 |
+| 遇到问题 | 挠挠头，有点困惑 |
+| 夜间空闲 | 枕着小枕头睡觉 |
+
+造型会在对应任务阶段循环保持；拖动、点击和鼠标注视仍使用原生交互。每个角色始终只有一个宠物 ID。
 
 | 一二 | 布布 |
 | --- | --- |
@@ -26,13 +41,13 @@
 打开 PowerShell，复制这一行（不需要提前安装 Git）：
 
 ```powershell
-irm https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v1.1.0/quick-install.ps1 | iex
+irm https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v2.0.0/quick-install.ps1 | iex
 ```
 
 这条命令会：
 
 - 将“一二”和“布布”安装到 `%USERPROFILE%\.codex\pets`；
-- 注册一个当前用户的 Windows 定时任务，每 5 分钟校正一次本地时间；
+- 注册一个当前用户的 Windows 定时任务，每分钟运行一次，运行期间每 5 秒检查任务类型与本地时间；
 - 每天 22:00–次日 08:00 只把待机动作换成睡觉，其他工作状态不变；
 - 不创建“一二（睡觉）”或“布布（睡觉）”等独立角色。
 
@@ -41,7 +56,7 @@ irm https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v1.1.0/quick-
 如果希望先查看脚本再执行：
 
 ```powershell
-git clone --branch v1.1.0 https://github.com/skye-luo/yier-bubu-codex-pet.git
+git clone --branch v2.0.0 https://github.com/skye-luo/yier-bubu-codex-pet.git
 cd yier-bubu-codex-pet
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 powershell -ExecutionPolicy Bypass -File .\install-sleep-mode.ps1
@@ -64,7 +79,7 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 ### macOS
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v1.1.0/quick-install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v2.0.0/quick-install.sh | bash
 ```
 
 这条命令会安装两个宠物并启用 22:00–08:00 自动睡眠。安装完成后重启 Codex，进入 `设置 → 外观 → Pets`，选择“一二”或“布布”。
@@ -72,7 +87,7 @@ curl -fsSL https://raw.githubusercontent.com/skye-luo/yier-bubu-codex-pet/v1.1.0
 如果你希望先查看脚本再执行，也可以使用透明的分步安装：
 
 ```bash
-git clone --branch v1.1.0 https://github.com/skye-luo/yier-bubu-codex-pet.git
+git clone --branch v2.0.0 https://github.com/skye-luo/yier-bubu-codex-pet.git
 cd yier-bubu-codex-pet
 bash install.sh
 bash install-sleep-mode.sh
@@ -83,7 +98,7 @@ bash install-sleep-mode.sh
 - 设置中始终只有“一二”和“布布”，不会注册独立睡觉角色；
 - 每天 22:00 将待机行换成睡觉，08:00 恢复普通待机；
 - 工作、等待确认、检查等其他状态不变；
-- 每 5 分钟校正一次，并在登录或唤醒后立即按本地时间校正；
+- 每 10 秒检查任务类型和本地时间，并在登录或唤醒后校正；
 - Codex 已运行时会尝试立即刷新宠物浮窗，否则下次启动时生效。
 
 手动测试：
@@ -92,6 +107,14 @@ bash install-sleep-mode.sh
 python3 ~/.codex/yier-bubu-pet-sleep-mode/pet_sleep_scheduler.py --mode sleep
 python3 ~/.codex/yier-bubu-pet-sleep-mode/pet_sleep_scheduler.py --mode awake
 ```
+
+## 自动识别的范围
+
+运行、等待回应、检查结果和错误由应用的原生宠物状态决定。附加调度器在本机检查近期本地任务日志，根据当前请求与工具调用中的关键词，选择查资料、写代码或写作造型；同一任务内至少保持 30 秒，避免来回闪动。未识别的任务使用抱电脑的通用工作造型。云端任务或没有本地日志的任务不能保证细分识别。
+
+只读取最近三天目录中、最近 30 分钟更新的至多 16 份日志末尾，每份最多 512 KiB。请求和工具文本不上传、不写入状态文件；状态文件只保存类别、匿名任务标记和切换时间。旧版本应用、未开放本地实时刷新接口的环境可能需要重启应用才能读取切换后的图集；调度器不会自动开启调试端口。
+
+已安装旧版的用户重新运行对应系统的一行安装命令即可更新，旧宠物和定时组件会备份到 `~/.codex/pets-backups/`。
 
 ## 校验与卸载
 

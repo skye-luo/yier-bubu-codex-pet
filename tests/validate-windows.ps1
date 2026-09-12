@@ -23,6 +23,11 @@ try {
         throw "PowerShell 语法校验失败：`n$($parseErrors -join "`n")"
     }
 
+    . (Join-Path $RepoRoot 'scripts\activity_state.ps1')
+    foreach ($case in @(@('帮我查资料做调研', 'research'), @('帮我写文章和润色', 'writing'), @('修复代码并测试', 'coding'))) {
+        if ((Get-TaskKind -Text $case[0]).kind -ne $case[1]) { throw '任务类型识别失败' }
+    }
+
     & (Join-Path $RepoRoot "verify.ps1")
     & (Join-Path $RepoRoot "install.ps1") -CodexHome $TestCodexHome
 
@@ -54,6 +59,29 @@ try {
         $actual = (Get-FileHash -LiteralPath (Join-Path $TestCodexHome "pets\$petId\spritesheet.webp") -Algorithm SHA256).Hash
         if ($expected -ne $actual) { throw "$petId 没有恢复白天图集" }
     }
+
+    foreach ($kind in @('research', 'writing')) {
+        foreach ($period in @('Awake', 'Sleep')) {
+            $expectedPath = Join-Path $RepoRoot "pets\yier\variants\$kind-$($period.ToLowerInvariant()).webp"
+            if (Test-Path -LiteralPath $expectedPath) {
+                & $scheduler -Mode $period -Activity $kind -CodexHome $TestCodexHome
+                foreach ($petId in @('yier', 'bubu')) {
+                    $expected = (Get-FileHash -LiteralPath (Join-Path $RepoRoot "pets\$petId\variants\$kind-$($period.ToLowerInvariant()).webp")).Hash
+                    $actual = (Get-FileHash -LiteralPath (Join-Path $TestCodexHome "pets\$petId\spritesheet.webp")).Hash
+                    if ($expected -ne $actual) { throw "$petId $kind $period 造型切换失败" }
+                }
+            }
+        }
+    }
+
+    $sessionDir = Join-Path (Join-Path $TestCodexHome 'sessions') (Get-Date).ToString('yyyy/MM/dd')
+    New-Item -ItemType Directory -Path $sessionDir -Force | Out-Null
+    $sample = @(
+        @{ type = 'event_msg'; payload = @{ type = 'task_started'; turn_id = 'fixture' } },
+        @{ type = 'event_msg'; payload = @{ type = 'user_message'; message = '帮我搜索资料' } }
+    ) | ForEach-Object { $_ | ConvertTo-Json -Compress }
+    $sample | Set-Content -LiteralPath (Join-Path $sessionDir 'fixture.jsonl') -Encoding UTF8
+    if ((Get-RecentTaskActivity -CodexRoot $TestCodexHome -Now (Get-Date).AddSeconds(1)).kind -ne 'research') { throw '本地任务日志识别失败' }
 
     & (Join-Path $RepoRoot "uninstall-sleep-mode.ps1") -CodexHome $TestCodexHome
     & (Join-Path $RepoRoot "uninstall.ps1") -CodexHome $TestCodexHome

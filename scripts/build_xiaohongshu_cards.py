@@ -47,10 +47,12 @@ def gradient(top: tuple[int, int, int], bottom: tuple[int, int, int]) -> Image.I
     return canvas.convert("RGBA")
 
 
-def sprite(pet_id: str, sleeping: bool = False) -> Image.Image:
+def sprite(pet_id: str, sleeping: bool = False, row: int = 0, activity: str | None = None) -> Image.Image:
     filename = "spritesheet-night.webp" if sleeping else "spritesheet.webp"
+    if activity:
+        filename = f"variants/{activity}-{'sleep' if sleeping else 'awake'}.webp"
     atlas = Image.open(ROOT / "pets" / pet_id / filename).convert("RGBA")
-    return atlas.crop((0, 0, CELL[0], CELL[1]))
+    return atlas.crop((0, row * CELL[1], CELL[0], (row + 1) * CELL[1]))
 
 
 def fit_sprite(image: Image.Image, max_width: int, max_height: int) -> Image.Image:
@@ -90,9 +92,9 @@ def build_cover() -> None:
     draw.ellipse((760, -90, 1140, 290), fill=(255, 214, 196, 110))
     draw.ellipse((-140, 1010, 360, 1510), fill=(238, 202, 212, 105))
     badge(draw, (72, 72), "Codex Desktop 宠物", (255, 255, 255, 215), (93, 68, 64, 255))
-    draw.text((72, 190), "我把一二和布布", font=F_TITLE, fill=(72, 53, 51, 255))
-    draw.text((72, 302), "搬进 Codex 啦！", font=F_TITLE, fill=(72, 53, 51, 255))
-    draw.text((76, 432), "会工作，也会按时睡觉", font=F_SUBTITLE, fill=(135, 94, 88, 255))
+    draw.text((72, 190), "一二和布布", font=F_TITLE, fill=(72, 53, 51, 255))
+    draw.text((72, 302), "换新形象啦！", font=F_TITLE, fill=(72, 53, 51, 255))
+    draw.text((76, 432), "陪你认真，也陪你按时休息", font=F_SUBTITLE, fill=(135, 94, 88, 255))
 
     draw.rounded_rectangle((80, 590, 1000, 1245), radius=76, fill=(255, 255, 255, 205))
     yier = fit_sprite(sprite("yier"), 390, 430)
@@ -109,23 +111,25 @@ def build_cover() -> None:
 def build_sleep() -> None:
     canvas = gradient((242, 244, 255), (221, 225, 248))
     draw = ImageDraw.Draw(canvas)
-    badge(draw, (72, 72), "自动日夜待机", (255, 255, 255, 215), (59, 65, 102, 255))
-    draw.text((72, 180), "一个角色", font=F_TITLE, fill=(44, 49, 77, 255))
-    draw.text((72, 292), "两种待机状态", font=F_TITLE, fill=(44, 49, 77, 255))
-
-    panels = [
-        ((65, 480, 1015, 820), "白天 / 有空时", False, (255, 255, 255, 215)),
-        ((65, 855, 1015, 1215), "22:00–08:00", True, (44, 48, 76, 225)),
+    badge(draw, (72, 72), "专属工作造型", (255, 255, 255, 215), (59, 65, 102, 255))
+    draw.text((72, 170), "现在一眼就知道", font=font(72), fill=(44, 49, 77, 255))
+    draw.text((72, 266), "它在忙什么", font=font(72), fill=(44, 49, 77, 255))
+    states = [
+        ("白天待机", 0, None, False), ("查找资料", 7, "research", False),
+        ("写代码", 7, None, False), ("写作规划", 7, "writing", False),
+        ("检查结果", 8, None, False), ("等你回应", 6, None, False),
+        ("遇到问题", 5, None, False), ("夜间睡眠", 0, None, True),
     ]
-    for rect, label, sleeping, fill in panels:
-        draw.rounded_rectangle(rect, radius=54, fill=fill)
-        label_color = (70, 68, 78, 255) if not sleeping else (235, 239, 255, 255)
-        draw.text((105, rect[1] + 38), label, font=F_HEADING, fill=label_color)
-        for pet_id, center_x in (("yier", 600), ("bubu", 830)):
-            pet = fit_sprite(sprite(pet_id, sleeping), 210, 210)
-            canvas.alpha_composite(pet, (center_x - pet.width // 2, rect[1] + 95))
-
-    draw.text((80, 1263), "只替换待机行 · 工作动画保持原样", font=F_BODY, fill=(67, 73, 111, 255))
+    for index, (label, row, activity, sleeping) in enumerate(states):
+        left = 65 + (index % 2) * 485
+        top = 390 + (index // 2) * 235
+        rect = (left, top, left + 465, top + 220)
+        draw.rounded_rectangle(rect, radius=30, fill=(255, 255, 255, 225))
+        text_center(draw, (left + 232, top + 10), label, F_LABEL, (59, 65, 102, 255))
+        for pet_id, center_x in (("yier", left + 125), ("bubu", left + 340)):
+            pet = fit_sprite(sprite(pet_id, sleeping, row, activity), 175, 160)
+            canvas.alpha_composite(pet, (center_x - pet.width // 2, top + 53 + 160 - pet.height))
+    text_center(draw, (540, 1320), "22:00–08:00，空闲时自动入睡", F_SMALL, (67, 73, 111, 255))
     footer(draw)
     canvas.convert("RGB").save(OUTPUT / "02-day-night.png", quality=95)
 
@@ -133,19 +137,19 @@ def build_sleep() -> None:
 def build_install() -> None:
     canvas = gradient((246, 242, 236), (234, 225, 213))
     draw = ImageDraw.Draw(canvas)
-    badge(draw, (72, 72), "macOS 安装", (255, 255, 255, 220), (81, 66, 57, 255))
-    draw.text((72, 184), "复制这一条", font=F_TITLE, fill=(65, 52, 46, 255))
+    badge(draw, (72, 72), "Windows + macOS", (255, 255, 255, 220), (81, 66, 57, 255))
+    draw.text((72, 184), "告诉 Codex", font=F_TITLE, fill=(65, 52, 46, 255))
     draw.text((72, 296), "就能养进 Codex", font=F_TITLE, fill=(65, 52, 46, 255))
     draw.rounded_rectangle((65, 475, 1015, 1035), radius=45, fill=(44, 40, 40, 245))
-    badge(draw, (100, 535), "一条命令", (229, 177, 159, 255), (51, 42, 39, 255))
+    badge(draw, (100, 535), "复制这句话", (229, 177, 159, 255), (51, 42, 39, 255))
     command_lines = [
-        "curl -fsSL https://raw.githubusercontent.com/",
-        "skye-luo/yier-bubu-codex-pet/v1.0.1/",
-        "quick-install.sh | bash",
+        "帮我安装或更新这两个宠物：",
+        "https://github.com/skye-luo/",
+        "yier-bubu-codex-pet",
     ]
     for index, command in enumerate(command_lines):
         draw.text((100, 665 + index * 72), command, font=F_CODE, fill=(245, 241, 237, 255))
-    draw.text((100, 915), "同一条命令 · 终端整行复制", font=F_SMALL, fill=(205, 190, 185, 255))
+    draw.text((100, 915), "也可使用正文里的一行安装命令", font=F_SMALL, fill=(205, 190, 185, 255))
     draw.rounded_rectangle((65, 1085, 1015, 1290), radius=42, fill=(255, 255, 255, 205))
     draw.text((110, 1128), "自动安装 + 自动睡眠", font=F_HEADING, fill=(73, 59, 53, 255))
     draw.text((110, 1206), "重启 Codex → Pets → 选择角色", font=F_BODY, fill=(116, 89, 79, 255))

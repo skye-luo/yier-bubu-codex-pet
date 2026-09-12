@@ -104,13 +104,27 @@ def validate_pet(pet_dir: Path) -> None:
         if ImageChops.difference(
             awake.crop(active_box),
             night.crop(active_box),
-        ).getbbox():
+        ).getbbox(alpha_only=False):
             raise ValueError(f"{night_path}: 除待机行外的工作动作发生变化")
         if not ImageChops.difference(
             awake.crop((0, 0, awake.width, CELL_HEIGHT)),
             night.crop((0, 0, night.width, CELL_HEIGHT)),
-        ).getbbox():
+        ).getbbox(alpha_only=False):
             raise ValueError(f"{night_path}: 夜间待机行与白天完全相同")
+
+    variants = pet_dir / "variants"
+    if variants.exists():
+        for activity in ("research", "writing"):
+            for mode, base in (("awake", awake), ("sleep", night)):
+                variant_path = variants / f"{activity}-{mode}.webp"
+                variant = load_and_validate_atlas(variant_path)
+                if variant.size != base.size:
+                    raise ValueError(f"{variant_path}: 变体尺寸不一致")
+                for row in range(row_count):
+                    box = (0, row * CELL_HEIGHT, base.width, (row + 1) * CELL_HEIGHT)
+                    differs = ImageChops.difference(base.crop(box), variant.crop(box)).getbbox(alpha_only=False) is not None
+                    if differs != (row == 7):
+                        raise ValueError(f"{variant_path}: 必须仅修改工作行 row 7；检查 row {row}")
 
     print(f"{pet_dir.name}: {awake.width}x{awake.height} RGBA，结构通过")
 

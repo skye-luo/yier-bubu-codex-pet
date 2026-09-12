@@ -1,6 +1,6 @@
 ﻿$ErrorActionPreference = "Stop"
 
-$ReleaseTag = if ($env:YIER_BUBU_RELEASE_TAG) { $env:YIER_BUBU_RELEASE_TAG } else { "v1.1.0" }
+$ReleaseTag = if ($env:YIER_BUBU_RELEASE_TAG) { $env:YIER_BUBU_RELEASE_TAG } else { "v2.0.0" }
 $ArchiveUrl = if ($env:YIER_BUBU_ARCHIVE_URL) {
     $env:YIER_BUBU_ARCHIVE_URL
 }

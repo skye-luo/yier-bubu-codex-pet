@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_url="${YIER_BUBU_REPO_URL:-https://github.com/skye-luo/yier-bubu-codex-pet.git}"
-release_tag="${YIER_BUBU_RELEASE_TAG:-v1.1.0}"
+release_tag="${YIER_BUBU_RELEASE_TAG:-v2.0.0}"
 temp_root="$(mktemp -d "${TMPDIR:-/tmp}/yier-bubu-codex-pet.XXXXXX")"
 
 cleanup() {

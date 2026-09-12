@@ -18,7 +18,7 @@ foreach ($line in Get-Content -LiteralPath (Join-Path $RepoRoot "SHA256SUMS") -E
     }
 }
 
-foreach ($petId in @("yier", "bubu")) {
+foreach ($petId in @("yier", "bubu", "dianzai")) {
     $petDir = Join-Path $RepoRoot "pets\$petId"
     $manifest = Get-Content -LiteralPath (Join-Path $petDir "pet.json") -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($manifest.id -ne $petId) { throw "$petId 的 pet.json id 不正确" }

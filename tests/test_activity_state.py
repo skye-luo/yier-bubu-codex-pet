@@ -62,6 +62,19 @@ class ActivityTests(unittest.TestCase):
             self.assertEqual(len(key), 16)
             self.assertNotIn("写报告", key)
 
+    def test_new_turn_has_a_distinct_anonymous_key(self):
+        now = dt.datetime.now().astimezone()
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            logs = root / "sessions" / now.strftime("%Y/%m/%d")
+            logs.mkdir(parents=True)
+            path = logs / "session.jsonl"
+            keys = []
+            for turn in ("a", "b"):
+                path.write_text(json.dumps(event("task_started", turn_id=turn)) + "\n", encoding="utf-8")
+                keys.append(recent_activity(root, now + dt.timedelta(seconds=1))[1])
+            self.assertNotEqual(keys[0], keys[1])
+
 
 if __name__ == "__main__":
     unittest.main()

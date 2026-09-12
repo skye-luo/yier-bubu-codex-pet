@@ -88,7 +88,7 @@ def recent_activity(codex_root: Path, now: dt.datetime) -> tuple[str, str]:
                     continue
             active, kind, turn = parse_records(records)
             if active:
-                key = hashlib.sha256(path.name.encode()).hexdigest()[:16]
+                key = hashlib.sha256(f"{path.name}:{turn}".encode()).hexdigest()[:16]
                 return kind, key
         except OSError:
             continue

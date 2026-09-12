@@ -4,8 +4,8 @@ $ReleaseTag = if ($env:YIER_BUBU_RELEASE_TAG) { $env:YIER_BUBU_RELEASE_TAG } els
 $ArchiveUrl = if ($env:YIER_BUBU_ARCHIVE_URL) {
     $env:YIER_BUBU_ARCHIVE_URL
 }
-else { "https://github.com/skye-luo/yier-bubu-codex-pet/archive/refs/tags/$ReleaseTag.zip" }
-$TempRoot = Join-Path ([IO.Path]::GetTempPath()) ("yier-bubu-codex-pet-" + [Guid]::NewGuid().ToString("N"))
+else { "https://github.com/skye-luo/yier-bubu-codex-pets/archive/refs/tags/$ReleaseTag.zip" }
+$TempRoot = Join-Path ([IO.Path]::GetTempPath()) ("yier-bubu-codex-pets-" + [Guid]::NewGuid().ToString("N"))
 
 try {
     New-Item -ItemType Directory -Path $TempRoot -Force | Out-Null

@@ -15,7 +15,7 @@ fi
 
 mkdir -p "$pets_root"
 
-for pet_id in yier bubu; do
+for pet_id in yier bubu dianzai; do
   source_dir="$repo_root/pets/$pet_id"
   target_dir="$pets_root/$pet_id"
 
@@ -46,5 +46,5 @@ for legacy_pet_id in yier-sleep bubu-sleep; do
 done
 
 echo
-echo "安装完成。请重启 Codex，然后前往 设置 → 外观 → Pets 切换一二或布布。"
+echo "安装完成。请重启 Codex，然后前往 设置 → 外观 → Pets 切换一二、布布或点仔。"
 echo "如需 22:00–08:00 自动睡觉，再运行：bash install-sleep-mode.sh"

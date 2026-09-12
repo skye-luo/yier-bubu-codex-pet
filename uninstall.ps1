@@ -12,7 +12,7 @@ $UninstallStamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $BackupRoot = Join-Path $CodexHome "pets-backups\yier-bubu-uninstalled-$UninstallStamp"
 $Moved = $false
 
-foreach ($petId in @("yier", "bubu")) {
+foreach ($petId in @("yier", "bubu", "dianzai")) {
     $targetDir = Join-Path $PetsRoot $petId
     if (Test-Path -LiteralPath $targetDir) {
         New-Item -ItemType Directory -Path $BackupRoot -Force | Out-Null
@@ -23,4 +23,4 @@ foreach ($petId in @("yier", "bubu")) {
 }
 
 if ($Moved) { Write-Host "宠物已移动到：$BackupRoot" }
-else { Write-Host "没有发现已安装的一二或布布。" }
+else { Write-Host "没有发现已安装的一二、布布或点仔。" }

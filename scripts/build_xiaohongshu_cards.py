@@ -145,7 +145,7 @@ def build_install() -> None:
     command_lines = [
         "帮我安装或更新这两个宠物：",
         "https://github.com/skye-luo/",
-        "yier-bubu-codex-pet",
+        "yier-bubu-codex-pets",
     ]
     for index, command in enumerate(command_lines):
         draw.text((100, 665 + index * 72), command, font=F_CODE, fill=(245, 241, 237, 255))

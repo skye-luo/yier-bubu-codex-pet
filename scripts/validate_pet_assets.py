@@ -114,6 +114,8 @@ def validate_pet(pet_dir: Path) -> None:
 
     variants = pet_dir / "variants"
     if variants.exists():
+        if not night_path.exists():
+            raise ValueError(f"{variants}: 任务造型需要配套夜间图集")
         for activity in ("research", "writing"):
             for mode, base in (("awake", awake), ("sleep", night)):
                 variant_path = variants / f"{activity}-{mode}.webp"

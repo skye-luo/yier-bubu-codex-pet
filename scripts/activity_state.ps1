@@ -35,12 +35,12 @@ function Get-RecentTaskActivity {
             $read = $stream.Read($buffer, 0, $count)
             $text = [Text.Encoding]::UTF8.GetString($buffer, 0, $read)
         } catch { continue } finally { if ($stream) { $stream.Dispose() } }
-        $active = $false; $promptText = ''; $toolText = @()
+        $active = $false; $promptText = ''; $toolText = @(); $turnId = ''
         foreach ($line in ($text -split "`n")) {
             try { $record = $line.TrimStart([char]0xFEFF) | ConvertFrom-Json -ErrorAction Stop } catch { continue }
             $payload = $record.payload
             if ($record.type -eq 'event_msg') {
-                if ($payload.type -eq 'task_started') { $active = $true; $promptText = ''; $toolText = @() }
+                if ($payload.type -eq 'task_started') { $active = $true; $promptText = ''; $toolText = @(); $turnId = [string]$payload.turn_id }
                 elseif ($payload.type -in @('task_complete', 'task_aborted', 'turn_aborted')) { $active = $false }
                 elseif ($payload.type -eq 'user_message') { $promptText = [string]$payload.message }
             }
@@ -63,7 +63,7 @@ function Get-RecentTaskActivity {
             $result = Get-TaskKind -Text $promptText
             if (-not $result.matched) { $result = Get-TaskKind -Text ($toolText -join "`n") }
             $sha = [Security.Cryptography.SHA256]::Create()
-            try { $key = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($file.Name)))).Replace('-', '').ToLowerInvariant().Substring(0, 16) }
+            try { $key = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($file.Name + ':' + $turnId)))).Replace('-', '').ToLowerInvariant().Substring(0, 16) }
             finally { $sha.Dispose() }
             return @{ kind = $result.kind; key = $key }
         }

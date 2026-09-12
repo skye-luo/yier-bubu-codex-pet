@@ -32,7 +32,7 @@ function Assert-PackageChecksums {
 Assert-PackageChecksums
 New-Item -ItemType Directory -Path $PetsRoot -Force | Out-Null
 
-foreach ($petId in @("yier", "bubu")) {
+foreach ($petId in @("yier", "bubu", "dianzai")) {
     $sourceDir = Join-Path $RepoRoot "pets\$petId"
     $targetDir = Join-Path $PetsRoot $petId
     $manifestPath = Join-Path $sourceDir "pet.json"
@@ -66,5 +66,5 @@ foreach ($legacyPetId in @("yier-sleep", "bubu-sleep")) {
 }
 
 Write-Host ""
-Write-Host "安装完成。请重启 ChatGPT/Codex，然后前往 设置 → Pets 切换一二或布布。"
+Write-Host "安装完成。请重启 ChatGPT/Codex，然后前往 设置 → Pets 切换一二、布布或点仔。"
 Write-Host "如需 22:00–08:00 自动睡觉，再运行：.\install-sleep-mode.ps1"

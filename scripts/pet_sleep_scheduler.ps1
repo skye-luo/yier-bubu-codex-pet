@@ -11,17 +11,17 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$PetIds = @("yier", "bubu")
+$PetIds = @("yier", "bubu", "dianzai")
 $ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 . (Join-Path $ScriptRoot 'activity_state.ps1')
 if (-not $CodexHome) {
-    if ((Split-Path -Leaf $ScriptRoot) -eq "yier-bubu-pet-sleep-mode") {
+    if ((Split-Path -Leaf $ScriptRoot) -eq "pet-sleep-mode") {
         $CodexHome = Split-Path -Parent $ScriptRoot
     }
     elseif ($env:CODEX_HOME) { $CodexHome = $env:CODEX_HOME }
     else { $CodexHome = Join-Path $HOME ".codex" }
 }
-$RuntimeRoot = Join-Path $CodexHome "yier-bubu-pet-sleep-mode"
+$RuntimeRoot = Join-Path $CodexHome "pet-sleep-mode"
 if (-not $Assets) { $Assets = Join-Path $RuntimeRoot "assets" }
 if (-not $StatePath) { $StatePath = Join-Path $RuntimeRoot "state.json" }
 

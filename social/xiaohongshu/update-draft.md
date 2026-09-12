@@ -1,8 +1,6 @@
 # 原笔记更新草稿（发布前待用户确认）
 
 原笔记：一二和布布住进 Codex 了！🐼🐻
-编辑地址：https://creator.xiaohongshu.com/publish/update?id=6a782e340000000022031eb5&noteType=normal
-保留当前“部分人不可见 / 不给谁看”的范围。
 图片仍为三张：新版形象、任务状态、快速安装。
 
 ## 正文

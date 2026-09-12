@@ -17,7 +17,7 @@ from pathlib import Path
 from activity_state import KINDS, recent_activity, stable_activity
 
 
-PET_IDS = ("yier", "bubu")
+PET_IDS = ("yier", "bubu", "dianzai")
 LEGACY_AVATAR_IDS = {
     "custom:yier-sleep": "custom:yier",
     "custom:bubu-sleep": "custom:bubu",
@@ -29,7 +29,7 @@ SETTING_RE = re.compile(
 
 def parse_args() -> argparse.Namespace:
     codex_root = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
-    runtime_root = codex_root / "yier-bubu-pet-sleep-mode"
+    runtime_root = codex_root / "pet-sleep-mode"
     parser = argparse.ArgumentParser(
         description=(
             "22:00–08:00 自动把一二/布布的待机动作换成睡觉，"
@@ -297,14 +297,7 @@ def main() -> int:
     if skipped_pet_ids:
         print(f"未安装，已跳过：{'、'.join(skipped_pet_ids)}")
 
-    selected_pet_id = (
-        selected_avatar.removeprefix("custom:")
-        if selected_avatar and selected_avatar.startswith("custom:")
-        else None
-    )
-    if not args.dry_run and (
-        migrated or selected_pet_id in changed_pet_ids
-    ) or (not args.dry_run and changed_pet_ids):
+    if not args.dry_run and (migrated or changed_pet_ids):
         notify_running_app(selected_avatar or "installed pets")
     return 0
 

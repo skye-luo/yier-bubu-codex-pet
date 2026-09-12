@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_url="${YIER_BUBU_REPO_URL:-https://github.com/skye-luo/yier-bubu-codex-pet.git}"
+repo_url="${YIER_BUBU_REPO_URL:-https://github.com/skye-luo/yier-bubu-codex-pets.git}"
 release_tag="${YIER_BUBU_RELEASE_TAG:-v2.0.0}"
-temp_root="$(mktemp -d "${TMPDIR:-/tmp}/yier-bubu-codex-pet.XXXXXX")"
+temp_root="$(mktemp -d "${TMPDIR:-/tmp}/yier-bubu-codex-pets.XXXXXX")"
 
 cleanup() {
   rm -rf "$temp_root"

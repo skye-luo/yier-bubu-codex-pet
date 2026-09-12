@@ -37,7 +37,7 @@ function Get-RecentTaskActivity {
         } catch { continue } finally { if ($stream) { $stream.Dispose() } }
         $active = $false; $promptText = ''; $toolText = @()
         foreach ($line in ($text -split "`n")) {
-            try { $record = $line | ConvertFrom-Json -ErrorAction Stop } catch { continue }
+            try { $record = $line.TrimStart([char]0xFEFF) | ConvertFrom-Json -ErrorAction Stop } catch { continue }
             $payload = $record.payload
             if ($record.type -eq 'event_msg') {
                 if ($payload.type -eq 'task_started') { $active = $true; $promptText = ''; $toolText = @() }

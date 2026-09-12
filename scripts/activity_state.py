@@ -81,7 +81,7 @@ def recent_activity(codex_root: Path, now: dt.datetime) -> tuple[str, str]:
             records = []
             for line in lines:
                 try:
-                    value = json.loads(line)
+                    value = json.loads(line.lstrip("\ufeff"))
                     if isinstance(value, dict):
                         records.append(value)
                 except (ValueError, TypeError):
